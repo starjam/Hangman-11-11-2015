@@ -1,0 +1,29 @@
+
+
+
+select * from words;
+
+
+
+UPDATE words
+SET WORD='DRUMMER'
+WHERE WORD='DELTA';
+
+update TABLE Persons
+(
+P_Id int NOT NULL
+
+);
+
+CREATE TABLE words
+(
+P_Id int NOT NULL,
+word varchar(55)
+
+);
+
+INSERT INTO words (word, LLAMA)
+
+
+INSERT INTO words (word)
+VALUES ('APPLE','BETA','CHARLIE','DATA','ECHO','FLUFFY','GREEN','HOTEL','ICICLE','JULIET','KILO','LAMA','MOTEL','NULL','OPPOSITE','PAPER','QUEEN','ROMEO','SIERRA','TANGO','UNIFORM','VICTOR','WHERE','XRAY','YELLOW','ZULU'); 

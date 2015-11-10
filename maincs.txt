@@ -1,0 +1,98 @@
+
+        //  2:: DONE - FILL blankWord array with **** same length as random WORD & POPULATE TextView:GUESSWORD     
+        public void wordFillStars()
+        {
+            char[] blankWord = selectedWord.ToCharArray();
+            Console.WriteLine("WORD IS in BLANKWORD " + selectedWord);
+            newString = new string('*', blankWord.Length);
+            Console.WriteLine("char in newstring array" + newString);
+            FindViewById<TextView>(Resource.Id.GUESSWORD).Text = newString;
+        }
+
+        // 3:: SELECT LETTER FROM ALPHA compare with all letters in selectWord Array
+        private void letterSelect()    
+        {           
+            int hangCount = 0; // wrong guess counter
+           // for (i = 0; i <= selectedWord.Length; i++) //  Console.WriteLine("WORD selectedWord =  " + selectedWord);//  { 
+
+            char[] checkword = selectedWord.ToCharArray();
+            string strcharacter = null;
+            foreach (char c in checkword)    //FOR EACH LETTER IN THE WORD ARRAY CHECKWORD
+                {                     
+                    strcharacter = c.ToString();//this is ok
+                    Console.WriteLine("for each character in checkword  =  " + c); 
+                    Console.WriteLine("LETTERGUESSED BEFORE IF LOOP :" + letterGuessed);
+                    if (strcharacter == letterGuessed)       //IF CHAR IN WORD EQUAL TO LETTER GUESSED IN A-Z                  
+                    {
+                        Console.WriteLine("CHECKWORD CHAR SAME  =           " + c);   // CHAR IN WORD
+                        Console.WriteLine("LETTER GUESSED IS LETTER: " + letterGuessed);  // LETTER IN A-Z
+
+                        for (int x = 0; x < selectedWord.Length; x++)
+                        {
+                           // if (c == letterGuessed[x])
+                           // {
+                                Console.WriteLine("trying to get GUESSED LETTER in here.." + newString);  // CHAR IN WORD                                  
+                                newString[x] = letterGuessed[x];
+                                //ERROR:: Property or indexer 'string.this[int]'cannot be assigned to -- it is read only'
+                          //  }
+                            Console.Write(newString[x]);
+                        }
+                        noHangflag = true;  // good you so right  
+                    }
+                    else
+                    {
+                        Console.WriteLine("CHECKWORD CHAR NOT SAME  =           " + c);
+
+                    }
+                       
+                        
+                }
+            if (noHangflag == false)
+            {
+                hangCount++;
+                Console.WriteLine("WRONG GUESS 1 less chance for you HANGCOUNT =    =           " + hangCount);
+                //if hangcount == 6 game over or sommit like it
+            }
+
+            return;
+           // }
+
+        }
+
+
+        // 3. CLICK LETTER & CHECK AGAINST selected ARRAY:: 
+        //    If letter equals a letter in array then 
+        //       a> replace wordFillStars with Letter
+        //       b> nohang counter add 1
+        //    If nohang == 0 then
+        //       a> hangcount counter add 1
+        //       b> replace hangman image1 with hangman image 2 (count is 6 chances for 6 images)
+
+        //void onBtndClick(object sender, EventArgs e)  // ALPHABET::: THIS JUST DISPLAYS IT ON THE SCREEN AT THE BOTTOM FOR A SECOND eg. LETTER d 
+        //{
+        //    letterGuessed = "d";
+        //    Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();
+        //    wordFillStars();
+        //    onBtndClick.Enabled = false;
+        //}
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //not used remove Jaimie!
+        void lstToDoList_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            Console.WriteLine("I'm working");
+            Toast.MakeText(this, myList[e.Position].WORD, ToastLength.Long);
+
+      

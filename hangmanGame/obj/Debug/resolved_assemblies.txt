@@ -1,0 +1,7 @@
+C:\Users\Jaimie\Desktop\LS023 JAIMIE LISA STOW\ASSIGNMENT 5 ANDROID HANGMAN 21-8-15\hangmanGame - Copy 10-11-15 - 12PM\hangmanGame\obj\Debug\assemblies\hangmanGame.dll
+C:\Users\Jaimie\Desktop\LS023 JAIMIE LISA STOW\ASSIGNMENT 5 ANDROID HANGMAN 21-8-15\hangmanGame - Copy 10-11-15 - 12PM\hangmanGame\obj\Debug\assemblies\Mono.Android.dll
+C:\Users\Jaimie\Desktop\LS023 JAIMIE LISA STOW\ASSIGNMENT 5 ANDROID HANGMAN 21-8-15\hangmanGame - Copy 10-11-15 - 12PM\hangmanGame\obj\Debug\assemblies\mscorlib.dll
+C:\Users\Jaimie\Desktop\LS023 JAIMIE LISA STOW\ASSIGNMENT 5 ANDROID HANGMAN 21-8-15\hangmanGame - Copy 10-11-15 - 12PM\hangmanGame\obj\Debug\assemblies\System.Core.dll
+C:\Users\Jaimie\Desktop\LS023 JAIMIE LISA STOW\ASSIGNMENT 5 ANDROID HANGMAN 21-8-15\hangmanGame - Copy 10-11-15 - 12PM\hangmanGame\obj\Debug\assemblies\System.dll
+C:\Users\Jaimie\Desktop\LS023 JAIMIE LISA STOW\ASSIGNMENT 5 ANDROID HANGMAN 21-8-15\hangmanGame - Copy 10-11-15 - 12PM\hangmanGame\obj\Debug\assemblies\System.Xml.dll
+C:\Users\Jaimie\Desktop\LS023 JAIMIE LISA STOW\ASSIGNMENT 5 ANDROID HANGMAN 21-8-15\hangmanGame - Copy 10-11-15 - 12PM\hangmanGame\obj\Debug\assemblies\System.Xml.Linq.dll

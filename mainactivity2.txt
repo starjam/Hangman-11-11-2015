@@ -1,0 +1,514 @@
+
+using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+
+
+namespace hangmanGame
+{
+    [Activity(Label = "hangmanwords", MainLauncher = true, Icon = "@drawable/icon")]
+    public class MainActivity : Activity
+    {
+        Button btna, btnb, btnc, btnd, btne, btnf, btng, btnh, btni, btnj, btnk, btnl, btnm, btnn, btno, btnp, btnq, btnr, btns, btnt, btnu, btnv, btnw, btnx, btny, btnz, btnx1, btnx2, btnx3, btnx4, btnx5;
+        string tempword, guessArray, letterGuessed, newString, selectedWord, displayToPlayer;
+        int i, hangCount, lettersFound = 0;
+        ListView lstToDoList, GuessWord;
+        List<ToDo> myList;
+        static string dbName = "hangmanwords.sqlite";
+        string dbPath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.ToString(), dbName);
+        DatabaseManager objDb;
+        char underscoreChar, selectedWordLetter, j;
+        Boolean clickable, noHangflag, guessIsCorrect, won;
+
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+            // Set our view from the "main" layout resource
+            SetContentView(Resource.Layout.Main);
+            //SET TEXTVIEW
+            TextView GuessWord = (TextView)FindViewById(Resource.Id.GUESSWORD);
+            lstToDoList = FindViewById<ListView>(Resource.Id.listView1);
+            lstToDoList.ItemClick += lstToDoList_ItemClick;
+            CopyDatabase();
+            objDb = new DatabaseManager();
+            myList = objDb.ViewAll();
+            selectedWord = myList[0].WORD; // 1:: EXTRACT RANDOM WORD - from the list of words CALLED from dbmanager : db command line
+            Console.WriteLine("I'm working  WORD...." + selectedWord);
+            wordFillStars();
+            //letterSelect();
+            lstToDoList.Adapter = new DataAdapter(this, myList);
+            InitializeControls();
+        }
+        //  2:: DONE - FILL blankWord array with **** same length as random WORD & POPULATE TextView:GUESSWORD     
+        public void wordFillStars()
+        {
+            char[] selectedWordLetter = selectedWord.ToCharArray();
+            newString = new string('*', selectedWordLetter.Length);
+            hangCount = (selectedWord.Length);
+            string changeString = newString;
+            for (int i = 0; i < selectedWordLetter.Length; i++)
+            {
+                newString = (selectedWordLetter[i] + "  ");
+                Console.Write("underscoreCharacter = " + selectedWordLetter[i] + "  ");
+            }
+            FindViewById<TextView>(Resource.Id.GUESSWORD).Text = (newString + " ");
+        }
+
+        private void checkLetterWord()
+        {
+            // Tell the user the number of letters through the dashes          
+            for (int i = 0; i < selectedWord.Length; i++)
+            {    // local var i set to 0; i++   i < word length
+                char[] selectedWordLetter = selectedWord.ToCharArray();
+                for (int j = 0; j < selectedWordLetter.Length; j++)
+                    if (selectedWordLetter[j] == letterGuessed[0])						// if selectedWord[position of letter in loop first pos 0] == guess  :guessed letter
+                    {
+                        Console.WriteLine("selectedWordLetter[j] = " + selectedWordLetter[j] + "  ");
+                        FindViewById<TextView>(Resource.Id.GUESSWORD).Text = (selectedWordLetter[j] + " ");								            // add 1 to lettersFound counter
+
+                    }
+                    else
+                    {
+                        selectedWordLetter[j] = '_';
+                    }
+            }
+        }
+        // 3:: SELECT LETTER FROM ALPHA compare with all letters in selectWord Array
+        private void letterSelect()
+        {
+            char[] checkword = selectedWord.ToCharArray();
+            string strcharacter = null;
+            strcharacter = checkword.ToString();
+            Console.WriteLine("hangCount starts at word lenght:: " + hangCount);
+            if (selectedWord.Contains(letterGuessed.ToString()))
+            {
+                checkLetterWord();
+                lettersFound++;
+                Console.WriteLine("lettersFound counter =  " + lettersFound);
+                if (lettersFound == selectedWord.Length)
+                {
+                    won = true;                                     // flag won boolean is set to true
+                    Console.WriteLine("you have won... hangman");
+                    // Restart current application, with same arguments/parameters
+                }
+            }
+            else //if (!selectedWord.Contains(strcharacter.ToString()))
+            {
+                hangCount = hangCount - 1;
+                Console.WriteLine("hangCount - 1 now = :: " + hangCount);
+                if (hangCount == 0)
+                {
+                    Console.WriteLine("you have lost... hangman: The word is :: " + selectedWord);
+                }
+                else
+                {
+                    Console.WriteLine("WRONG GUESS 1 less chance for you have " + hangCount + " many chances left...");
+                }
+            }
+            return;
+        }
+
+        //private void checkLetter()
+        //{
+        //    foreach (char c in checkword)    //FOR EACH LETTER IN THE WORD ARRAY CHECKWORD
+        //    {
+        //        strcharacter = c.ToString();//this is ok
+        //        Console.WriteLine("for each character in checkword  =  " + c);
+        //        Console.WriteLine("LETTERGUESSED BEFORE IF LOOP :" + letterGuessed);
+        //        if (strcharacter == letterGuessed)       //IF CHAR IN WORD EQUAL TO LETTER GUESSED IN A-Z                  
+        //        {
+        //            Console.WriteLine("CHECKWORD CHAR SAME  =           " + c);   // CHAR IN WORD
+        //            Console.WriteLine("LETTER GUESSED IS LETTER: " + letterGuessed);  // LETTER IN A-Z
+        //           // return();
+        //            //for (int x = 0; x < selectedWord.Length; x++)
+        //            //{
+        //            //   // if (c == letterGuessed[x])
+        //            //   // {
+        //            //        Console.WriteLine("trying to get GUESSED LETTER in here.." + newString);  // CHAR IN WORD                                  
+        //            //        newString[x] = letterGuessed[x];
+        //            //        //ERROR:: Property or indexer 'string.this[int]'cannot be assigned to -- it is read only'
+        //            //  //  }
+        //            //    Console.Write(newString[x]);
+        //            //}
+        //            //noHangflag = true;  // good you so right  
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine("CHECKWORD CHAR NOT SAME  =           " + c);
+
+        //        }
+
+
+        //    }
+        //}
+
+
+
+        public void InitializeControls()
+        {
+            btna = FindViewById<Button>(Resource.Id.btna); btnb = FindViewById<Button>(Resource.Id.btnb); btnc = FindViewById<Button>(Resource.Id.btnc);
+            btnd = FindViewById<Button>(Resource.Id.btnd); btne = FindViewById<Button>(Resource.Id.btne); btnf = FindViewById<Button>(Resource.Id.btnf);
+            btng = FindViewById<Button>(Resource.Id.btng); btnh = FindViewById<Button>(Resource.Id.btnh); btni = FindViewById<Button>(Resource.Id.btni);
+            btnj = FindViewById<Button>(Resource.Id.btnj); btnk = FindViewById<Button>(Resource.Id.btnk); btnl = FindViewById<Button>(Resource.Id.btnl);
+            btnm = FindViewById<Button>(Resource.Id.btnm); btnn = FindViewById<Button>(Resource.Id.btnn); btno = FindViewById<Button>(Resource.Id.btno);
+            btnp = FindViewById<Button>(Resource.Id.btnp); btnq = FindViewById<Button>(Resource.Id.btnq); btnr = FindViewById<Button>(Resource.Id.btnr);
+            btns = FindViewById<Button>(Resource.Id.btns); btnt = FindViewById<Button>(Resource.Id.btnt); btnu = FindViewById<Button>(Resource.Id.btnu);
+            btnv = FindViewById<Button>(Resource.Id.btnv); btnw = FindViewById<Button>(Resource.Id.btnw); btnx = FindViewById<Button>(Resource.Id.btnx);
+            btny = FindViewById<Button>(Resource.Id.btny); btnz = FindViewById<Button>(Resource.Id.btnz);
+            btnx1 = FindViewById<Button>(Resource.Id.btnx1); btnx2 = FindViewById<Button>(Resource.Id.btnx2); btnx3 = FindViewById<Button>(Resource.Id.btnx3);
+            btnx4 = FindViewById<Button>(Resource.Id.btnx4); btnx5 = FindViewById<Button>(Resource.Id.btnx5);
+            btna.Click += onBtnaClick; btnb.Click += onBtnbClick; btnc.Click += onBtncClick; btnd.Click += onBtndClick; btne.Click += onBtneClick;
+            btnf.Click += onBtnfClick; btng.Click += onBtngClick; btnh.Click += onBtnhClick; btni.Click += onBtniClick; btnj.Click += onBtnjClick;
+            btnk.Click += onBtnkClick; btnl.Click += onBtnlClick; btnm.Click += onBtnmClick; btnn.Click += onBtnnClick; btno.Click += onBtnoClick;
+            btnp.Click += onBtnpClick; btnq.Click += onBtnqClick; btnr.Click += onBtnrClick; btns.Click += onBtnsClick; btnt.Click += onBtntClick;
+            btnu.Click += onBtnuClick; btnv.Click += onBtnvClick; btnw.Click += onBtnwClick; btnx.Click += onBtnxClick; btny.Click += onBtnyClick;
+            btnz.Click += onBtnzClick;
+        }
+
+
+        private void onBtnzClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "Z";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnz.Enabled = false;
+            btnz.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnyClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "Y";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btny.Enabled = false;
+            btny.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnxClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "X";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnx.Enabled = false;
+            btnx.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnwClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false)
+            {
+                Console.WriteLine("letterguessed W is FALSE");
+            }
+            letterGuessed = "W";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            Console.WriteLine("letterguessed W ABOVE I AM AT BUTTON W NOW & IT WILL BE HIDDEN");
+            btnw.Enabled = false;
+            btnw.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnvClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "V";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnv.Enabled = false;
+            btnv.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnuClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "U";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnu.Enabled = false;
+            btnu.Visibility = ViewStates.Invisible;
+        }
+
+        private void onBtntClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "T";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnt.Enabled = false;
+            btnt.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnsClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "S";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btns.Enabled = false;
+            btns.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnrClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "R";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnr.Enabled = false;
+            btnr.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnqClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "Q";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnq.Enabled = false;
+            btnq.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnpClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "P";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnp.Enabled = false;
+            btnp.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnoClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "O";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btno.Enabled = false;
+            btno.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnnClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "N";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnn.Enabled = false;
+            btnn.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnmClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "M";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnm.Enabled = false;
+            btnm.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnlClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "L";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnl.Enabled = false;
+            btnl.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnkClick(object sender, EventArgs e)
+        {
+            clickable = false;
+            if (clickable == false) { }
+            letterGuessed = "K";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnk.Enabled = false;
+            btnk.Visibility = ViewStates.Invisible;
+        }
+
+        private void onBtnjClick(object sender, EventArgs e)
+        {
+            letterGuessed = "J";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnj.Enabled = false;
+            btnj.Visibility = ViewStates.Invisible;
+        }
+
+        private void onBtniClick(object sender, EventArgs e)
+        {
+            letterGuessed = "I";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btni.Enabled = false;
+            btni.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnhClick(object sender, EventArgs e)
+        {
+            letterGuessed = "H";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnh.Enabled = false;
+            btnh.Visibility = ViewStates.Invisible;
+        }
+        private void onBtngClick(object sender, EventArgs e)
+        {
+            letterGuessed = "G";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btng.Enabled = false;
+            btng.Visibility = ViewStates.Invisible;
+        }
+        private void onBtnfClick(object sender, EventArgs e)
+        {
+            letterGuessed = "F";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER" + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btnf.Enabled = false;
+            btnf.Visibility = ViewStates.Invisible;
+        }
+
+        private void onBtneClick(object sender, EventArgs e)
+        {
+            letterGuessed = "E";
+            Console.WriteLine("I HAVE BUTTONCLICKED THE LETTER E... SEE..." + letterGuessed);
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();  //display at bottom  of screen
+            letterSelect();
+            btne.Enabled = false;
+            btne.Visibility = ViewStates.Invisible;
+        }
+        //wrong for calling letters as they need to be disabled onclick - needs work of course: out of time
+        private void onBtndClick(object sender, EventArgs e)
+        {
+            letterGuessed = "D";
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();
+            letterSelect();
+            btnd.Enabled = false;
+            btnd.Visibility = ViewStates.Invisible;
+        }
+        private void onBtncClick(object sender, EventArgs e)
+        {
+            letterGuessed = "C";
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();
+            letterSelect();
+            btnc.Enabled = false;
+            btnc.Visibility = ViewStates.Invisible;
+        }
+
+        private void onBtnbClick(object sender, EventArgs e)
+        {
+            letterGuessed = "B";
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();
+            letterSelect();
+            btnb.Enabled = false;
+            btnb.Visibility = ViewStates.Invisible;
+        }
+
+        private void onBtnaClick(object sender, EventArgs e)
+        {
+            letterGuessed = "A";
+            Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();
+            letterSelect();
+            btna.Enabled = false;
+            btna.Visibility = ViewStates.Invisible;
+        }
+
+
+
+
+        // 3. CLICK LETTER & CHECK AGAINST selected ARRAY:: 
+        //    If letter equals a letter in array then 
+        //       a> replace wordFillStars with Letter
+        //       b> nohang counter add 1
+        //    If nohang == 0 then
+        //       a> hangcount counter add 1
+        //       b> replace hangman image1 with hangman image 2 (count is 6 chances for 6 images)
+
+        //void onBtndClick(object sender, EventArgs e)  // ALPHABET::: THIS JUST DISPLAYS IT ON THE SCREEN AT THE BOTTOM FOR A SECOND eg. LETTER d 
+        //{
+        //    letterGuessed = "d";
+        //    Toast.MakeText(this, "LETTER " + letterGuessed, ToastLength.Long).Show();
+        //    wordFillStars();
+        //    onBtndClick.Enabled = false;
+        //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //not used remove Jaimie!
+        void lstToDoList_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            Console.WriteLine("I'm working");
+            Toast.MakeText(this, myList[e.Position].WORD, ToastLength.Long);
+
+        }
+        public void CopyDatabase()
+        {
+            if (!File.Exists(dbPath))
+            {
+                using (BinaryReader br = new BinaryReader(Assets.Open(dbName)))
+                {
+                    using (BinaryWriter bw = new BinaryWriter(new FileStream(dbPath, FileMode.Create)))
+                    {
+                        byte[] buffer = new byte[2048];
+                        int len = 0;
+                        while ((len = br.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            bw.Write(buffer, 0, len);
+                        }
+
+                    }
+
+                }
+
+            }
+        }
+
+    }
+}
+

@@ -1,0 +1,28 @@
+
+public void checkForAnswer()
+{
+if (selectedWord.Contains(letterGuessed.ToString())) {    	// if word contains guessed letter
+guessIsCorrect = true;  					// flag	guessIsCorrect boolean set to true
+
+guessCorrect ();							// guessCorrect function
+for (int i = 0; i < selectedWord.Length; i++) {   // local var i set to 0; i++   i < word length
+if (selectedWord[i] == letterGuessed)			// if selectedWord[pos] == letterGuessed  :guessed letter
+{
+displayToPlayer[i] = selectedWord[i];			//      then displayToPlayer the letter from selectedWord
+lettersFound++;								//      add 1 to lettersFound counter
+}
+ 
+}
+if (lettersFound == selectedWord.Length) {      // if lettersFound == length of word selected from /DB
+won = true;                                  // flag won boolean is set to true
+checkWin ();                                 // run function won
+}
+
+}
+else if (!selectedWord.Contains(letterGuessed.ToString())) { // or ELSE if WORD selectedWord not contain 
+guessIsCorrect = false;							  // letterGuessed  ::guessed letter
+guessIncorrect ();				//START AT TOP -> go to checkForAnswer() FUNCTION
+}
+
+lines.Text = displayToPlayer.ToString ();												  
+

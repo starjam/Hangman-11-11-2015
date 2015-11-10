@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5dip"
+    android:id="@+id/relativeLayout1">
+<!-- letter appears -->
+    <EditText
+        android:id="@+id/txtNum2"
+        android:layout_width="45dp"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_x="60dp"
+        android:layout_y="146dp"
+        android:layout_marginTop="20.0dp"
+        android:layout_marginLeft="50.0dp" />
+    <EditText
+        android:id="@+id/txtNum1"
+        android:layout_width="45dp"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:numeric="decimal"
+        android:layout_x="60dp"
+        android:layout_y="68dp"
+        android:layout_marginTop="20.0dp"
+        android:layout_marginLeft="0.0dp"
+        android:layout_marginRight="10.0dp" />
+<!-- SQLite row id / hidden by default -->
+    <TextView
+        android:id="@+id/sqlite_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+<!-- web site title -->
+    <TextView
+        android:id="@+id/WORD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dip"
+        android:paddingLeft="8dip"
+        android:paddingBottom="4dip"
+        android:textSize="18dip"
+        android:text="Your word will appear here"
+        android:textColor="#AAAAAA" />
+<!--    android:visibility="gone" -->
+<!-- Right end Arrow - alphabet 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/rightarrow"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" /> -->
+</RelativeLayout>
